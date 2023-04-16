@@ -32,6 +32,19 @@ import TodoItem from "../components/TodoItem.vue";
 
 const todoList = ref([]);
 
+const setTodoListLocalStorage = () => {
+    localStorage.setItem('todoList', JSON.stringify(todoList.value));
+};
+
+const fetchTodoList = () => {
+    const savedTodoList = JSON.parse(localStorage.getItem('todoList'));
+    if (savedTodoList) {
+        todoList.value = savedTodoList;
+    }
+};
+
+fetchTodoList();
+
 const createTodo = (todo) => {
     todoList.value.unshift({
         id: uid(),
@@ -39,22 +52,27 @@ const createTodo = (todo) => {
         isCompleted: false,
         isEditing: false,
     });
+    setTodoListLocalStorage();
 };
 
 const toggleTodoComplete = (todoIdx) => {
     todoList.value[todoIdx].isCompleted = !todoList.value[todoIdx].isCompleted;
+    setTodoListLocalStorage();
 };
 
 const toggleEditTodo = (todoIdx) => {
     todoList.value[todoIdx].isEditing = !todoList.value[todoIdx].isEditing;
+    setTodoListLocalStorage();
 };
 
 const updateTodo = (todoVal, todoIdx) => {
     todoList.value[todoIdx].todo = todoVal;
+    setTodoListLocalStorage();
 };
 
 const deleteTodo = (totoId) => {
     todoList.value = todoList.value.filter((todo) => todo.id !== totoId);
+    setTodoListLocalStorage();
 };
 
 </script>
