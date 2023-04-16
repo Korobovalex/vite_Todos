@@ -1,7 +1,21 @@
 <template>
   <main>
       <h1>Текущие задачи</h1>
-      <todo-creator @create-todo="createTodo" />
+      <todo-creator
+          @create-todo="createTodo"
+      />
+      <ul v-if="todoList.length > 0" class="todo-list">
+          <todo-item
+              v-for="(todo, index) in todoList"
+              :key="todo.id"
+              :todo="todo"
+              :index="index"
+          />
+      </ul>
+      <p class="todos-msg" v-else>
+          <Icon icon="noto-v1:sad-but-relieved-face" />
+          <span>У вас еще нет ни одной записи! Создайте новую!</span>
+      </p>
   </main>
 </template>
 
@@ -9,6 +23,8 @@
 import TodoCreator from "@/components/TodoCreator.vue";
 import { ref } from "vue";
 import { uid } from 'uid';
+import { Icon } from "@iconify/vue";
+import TodoItem from "../components/TodoItem.vue";
 
 const todoList = ref([]);
 
@@ -36,5 +52,24 @@ main {
         margin-top: 16px;
         text-align: center;
     }
+
+    .todo-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 16px;
+        gap: 12px;
+        list-style: none;
+    }
+
+    .todos-msg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 16px;
+        font-size: 13px;
+    }
+
 }
 </style>
