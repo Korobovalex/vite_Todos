@@ -20,17 +20,31 @@
           <Icon icon="noto-v1:sad-but-relieved-face" />
           <span>У вас еще нет ни одной записи! Создайте новую!</span>
       </p>
+      <p v-if="allTodosCompleted && todoList.length > 0" class="todos-msg completed">
+          <Icon icon="noto-v1:party-popper" />
+          <span>Поздравляем! Вы завершили все задачи.</span>
+      </p>
   </main>
 </template>
 
 <script setup>
 import TodoCreator from "@/components/TodoCreator.vue";
-import { ref } from "vue";
+import { ref, watch, computed } from "vue";
 import { uid } from 'uid';
 import { Icon } from "@iconify/vue";
-import TodoItem from "../components/TodoItem.vue";
+import TodoItem from "@/components/TodoItem.vue";
 
 const todoList = ref([]);
+
+watch(todoList, () => {
+    setTodoListLocalStorage();
+}, {
+    deep: true,
+});
+
+const allTodosCompleted = computed(() => {
+    return todoList.value.every((todo) => todo.isCompleted);
+});
 
 const setTodoListLocalStorage = () => {
     localStorage.setItem('todoList', JSON.stringify(todoList.value));
@@ -52,29 +66,23 @@ const createTodo = (todo) => {
         isCompleted: false,
         isEditing: false,
     });
-    setTodoListLocalStorage();
 };
 
 const toggleTodoComplete = (todoIdx) => {
     todoList.value[todoIdx].isCompleted = !todoList.value[todoIdx].isCompleted;
-    setTodoListLocalStorage();
 };
 
 const toggleEditTodo = (todoIdx) => {
     todoList.value[todoIdx].isEditing = !todoList.value[todoIdx].isEditing;
-    setTodoListLocalStorage();
 };
 
 const updateTodo = (todoVal, todoIdx) => {
     todoList.value[todoIdx].todo = todoVal;
-    setTodoListLocalStorage();
 };
 
 const deleteTodo = (totoId) => {
     todoList.value = todoList.value.filter((todo) => todo.id !== totoId);
-    setTodoListLocalStorage();
 };
-
 </script>
 
 <style lang="scss" scoped>
@@ -87,7 +95,7 @@ main {
     padding: 40px 16px;
 
     h1 {
-        margin-top: 16px;
+        margin-bottom: 16px;
         text-align: center;
     }
 
@@ -109,5 +117,10 @@ main {
         font-size: 13px;
     }
 
+    .completed {
+        color: #41b080;
+        font-size: 14px;
+        font-weight: 500;
+    }
 }
 </style>
