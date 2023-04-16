@@ -10,6 +10,7 @@
               :key="todo.id"
               :todo="todo"
               :index="index"
+              @toggle-complete="toggleTodoComplete"
           />
       </ul>
       <p class="todos-msg" v-else>
@@ -35,6 +36,10 @@ const createTodo = (todo) => {
         isCompleted: false,
         isEditing: false,
     });
+};
+
+const toggleTodoComplete = (todoIdx) => {
+    todoList.value[todoIdx].isCompleted = !todoList.value[todoIdx].isCompleted;
 };
 
 </script>
